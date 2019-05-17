@@ -1,0 +1,5 @@
+---
+__nginx_user: "www-data"
+
+https_port: 443
+http_port: 80

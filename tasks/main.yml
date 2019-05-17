@@ -1,0 +1,27 @@
+---
+
+- name: Ensure nginx is present
+  apt:
+    name: nginx
+
+- import_tasks: configure.yml
+
+- name: Ensure nginx is started and enabled to start at boot.
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Ensure ufw is present
+  apt:
+    name: ufw
+
+- name: Allow https traffic
+  ufw:
+    rule: allow
+    port: "{{ https_port }}"
+
+- name: Allow http traffic
+  ufw:
+    rule: allow
+    port: "{{ http_port }}"

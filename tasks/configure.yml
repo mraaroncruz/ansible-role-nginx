@@ -1,0 +1,36 @@
+---
+- name: Define nginx_user.
+  set_fact:
+    nginx_user: "{{ __nginx_user }}"
+  when: nginx_user is not defined
+
+- name: Copy nginx configuration in place.
+  template:
+    src: "nginx.conf.j2"
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload nginx
+
+- name: Add h5bp snippets
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/{{ item }}"
+  with_items:
+    - "conf.d/"
+    - "h5bp/"
+    - "mime.types"
+  notify:
+    - reload nginx
+
+- name: Ensure nginx default is removed
+  file:
+    path: /etc/nginx/sites-available/default
+    state: absent
+
+- name: Ensure nginx sites-available is removed
+  file:
+    path: /etc/nginx/sites-available
+    state: absent
